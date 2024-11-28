@@ -42,7 +42,7 @@ export default function Home() {
             </SignedOut>
             <SignedIn>
               <Button size="lg" variant="secondary" className="w-full" asChild>
-                <Link href="/lern">Continua sa fii crutoi</Link>
+                <Link href="/learn">Continua sa fii crutoi</Link>
               </Button>
             </SignedIn>
           </ClerkLoaded>
