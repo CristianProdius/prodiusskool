@@ -3,9 +3,10 @@ import React from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { Ghost, InfinityIcon } from "lucide-react";
+import { cursuri } from "@/db/schema";
 
 type Props = {
-  activeCourse: { imageSrc: string; title: string }; //replace with DB
+  activeCourse: typeof cursuri.$inferSelect;
   hearts: number;
   points: number;
   hasActiveSubscription: boolean;
