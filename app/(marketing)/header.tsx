@@ -2,13 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import {
-  ClerkLoaded,
-  ClerkLoading,
-  SignedIn,
-  SignIn,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkLoaded, ClerkLoading, SignedIn, UserButton } from "@clerk/nextjs";
 import { Loader } from "lucide-react";
 import { SignedOut, SignInButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";

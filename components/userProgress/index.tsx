@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { Ghost, InfinityIcon } from "lucide-react";
+import { InfinityIcon } from "lucide-react";
 import { cursuri } from "@/db/schema";
 
 type Props = {
