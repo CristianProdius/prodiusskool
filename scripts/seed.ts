@@ -15,10 +15,10 @@ const main = async () => {
     console.log("Seeding database");
 
     // Clear existing data
-    await db.delete(schema.cursuri);
+    await db.delete(schema.courses);
     await db.delete(schema.userProgress);
 
-    await db.insert(schema.cursuri).values([
+    await db.insert(schema.courses).values([
       {
         id: 1,
         title: "Matematica",
