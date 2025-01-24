@@ -1,14 +1,16 @@
 import { cache } from "react";
-import db from "./drizzle";
-import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
+import { auth } from "@clerk/nextjs/server";
+
+import db from "@/db/drizzle";
 import {
   challengeProgress,
   courses,
   lessons,
   units,
   userProgress,
-} from "./schema";
+  userSubscription,
+} from "@/db/schema";
 
 export const getUserProgress = cache(async () => {
   const { userId } = await auth();
@@ -27,8 +29,6 @@ export const getUserProgress = cache(async () => {
   return data;
 });
 
-//ToDo
-//here is a loop inside a loop it migh be improved by using reduce or actaully sql query from drizzel, but for now it is fine
 export const getUnits = cache(async () => {
   const { userId } = await auth();
   const userProgress = await getUserProgress();
@@ -38,11 +38,14 @@ export const getUnits = cache(async () => {
   }
 
   const data = await db.query.units.findMany({
+    orderBy: (units, { asc }) => [asc(units.order)],
     where: eq(units.courseId, userProgress.activeCourseId),
     with: {
       lessons: {
+        orderBy: (lessons, { asc }) => [asc(lessons.order)],
         with: {
           challenges: {
+            orderBy: (challenges, { asc }) => [asc(challenges.order)],
             with: {
               challengeProgress: {
                 where: eq(challengeProgress.userId, userId),
@@ -56,6 +59,10 @@ export const getUnits = cache(async () => {
 
   const normalizedData = data.map((unit) => {
     const lessonsWithCompletedStatus = unit.lessons.map((lesson) => {
+      if (lesson.challenges.length === 0) {
+        return { ...lesson, completed: false };
+      }
+
       const allCompletedChallenges = lesson.challenges.every((challenge) => {
         return (
           challenge.challengeProgress &&
@@ -64,22 +71,16 @@ export const getUnits = cache(async () => {
         );
       });
 
-      return {
-        ...lesson,
-        completed: allCompletedChallenges,
-      };
+      return { ...lesson, completed: allCompletedChallenges };
     });
 
-    return {
-      ...unit,
-      lessons: lessonsWithCompletedStatus,
-    };
+    return { ...unit, lessons: lessonsWithCompletedStatus };
   });
 
   return normalizedData;
 });
 
-export const getcourses = cache(async () => {
+export const getCourses = cache(async () => {
   const data = await db.query.courses.findMany();
 
   return data;
@@ -88,7 +89,16 @@ export const getcourses = cache(async () => {
 export const getCourseById = cache(async (courseId: number) => {
   const data = await db.query.courses.findFirst({
     where: eq(courses.id, courseId),
-    //TODO: pupulate units and lessons
+    with: {
+      units: {
+        orderBy: (units, { asc }) => [asc(units.order)],
+        with: {
+          lessons: {
+            orderBy: (lessons, { asc }) => [asc(lessons.order)],
+          },
+        },
+      },
+    },
   });
 
   return data;
