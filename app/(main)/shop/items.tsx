@@ -31,7 +31,7 @@ export const Items = ({ hearts, points, hasActiveSubscription }: Props) => {
   const onUpgrade = () => {
     startTransition(() => {
       createStripeUrl()
-        .then((response: { data: string }) => {
+        .then((response: { data: string | null }) => {
           if (response.data) {
             window.location.href = response.data;
           }

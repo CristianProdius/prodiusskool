@@ -55,8 +55,8 @@ export const Quiz = ({
   const router = useRouter();
 
   const [finishAudio] = useAudio({ src: "/finish.mp3", autoPlay: true });
-  const [correctAudio, _c, correctControls] = useAudio({ src: "/correct.wav" });
-  const [incorrectAudio, _i, incorrectControls] = useAudio({
+  const [correctAudio, , correctControls] = useAudio({ src: "/correct.wav" });
+  const [incorrectAudio, , incorrectControls] = useAudio({
     src: "/incorrect.wav",
   });
   const [pending, startTransition] = useTransition();
